@@ -5,10 +5,14 @@ from player import Player
 from ray_casting import ray_casting
 from show_sprites import Sprites
 from render import Render
+from menu import Menu
 
 pygame.init()
 screen = pygame.display.set_mode(SIZE)
 mini_map_screen = pygame.Surface((MINI_MAP_WIDTH, MINI_MAP_HEIGHT))
+
+game = Menu(screen, points)
+game.menu()
 
 clock = pygame.time.Clock()
 sprites = Sprites()

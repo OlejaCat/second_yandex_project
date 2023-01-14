@@ -46,3 +46,7 @@ CENTER_RAY = NUMBER_OF_RAYS // 2
 # colors
 SKY_COLOR = (0, 180, 255)
 FLOOR_COLOR = (40, 40, 40)
+
+# menu settings
+points = [(650, 200, 'Play', (250, 250, 250), (161, 5, 5), 0),
+          (650, 400, 'Exit', (250, 250, 250), (161, 5, 5), 1)]
