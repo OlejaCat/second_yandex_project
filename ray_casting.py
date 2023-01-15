@@ -20,8 +20,6 @@ def ray_casting(player_pos, player_angle, textures):
     for ray in range(NUMBER_OF_RAYS):
         sin = math.sin(current_angle)
         cos = math.cos(current_angle)
-        sin = sin if sin else 0.000001
-        cos = cos if cos else 0.000001
 
         x, dx = (cx + TILE_SIZE, 1) if cos >= 0 else (cx, -1)
         for i in range(0, MAP_WIDTH, TILE_SIZE):

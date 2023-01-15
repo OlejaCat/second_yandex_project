@@ -1,29 +1,12 @@
-import math
-
 import pygame
 import os
 
 from settings import *
 
 
-def load_sprite(name):
-    fullname = os.path.join('sprites', name)
-    if not os.path.isfile(fullname):
-        print(f"Файл с изображением '{fullname}' не найден")
-        exit(0)
-    image = pygame.image.load(fullname).convert_alpha()
-    return image
-
-
 class Sprites:
-    def __init__(self):
-        self.types = {
-            'slot_machine': load_sprite('slot_machine.png'),
-            'coin': load_sprite('coin.png')
-        }
-        self.all_sprites = [
-            Sprite(self.types['slot_machine'], False, (7.5, 4.5), 0.3, 0.75)
-        ]
+    def __init__(self, all_sprites):
+        self.all_sprites = all_sprites
 
 
 class Sprite:
@@ -42,9 +25,9 @@ class Sprite:
         distance_to_sprite = math.sqrt((dx ** 2 + dy ** 2))
         walls = [walls[0]for _ in range(NUMBER_OF_FAKE_RAYS)] + walls + [walls[-1] for _ in range(NUMBER_OF_FAKE_RAYS)]
         betta = math.atan2(dy, dx)
-
         gamma = betta - player.angle
-        if dx > 0 and 180 <= math.degrees(gamma) <= 360 or dx > 0 > dy:
+
+        if dx > 0 and 180 <= math.degrees(player.angle) <= 360 or dx > 0 > dy:
             gamma += math.pi * 2
 
         delta_rays = int(gamma // DELTA)

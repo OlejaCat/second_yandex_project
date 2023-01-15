@@ -19,7 +19,7 @@ class Wall(pygame.sprite.Sprite):
         super().__init__()
 
 
-class Star(pygame.sprite.Sprite):
+class Coin(pygame.sprite.Sprite):
     def __init__(self, group):
         super().__init__()
 
@@ -46,7 +46,7 @@ class Render:
             if wall[0]:
                 self.screen.blit(wall[2], wall[1])
 
-    def draw_mini_map(self, player):
+    """def draw_mini_map(self, player):
         self.mini_map_screen.fill(pygame.Color('black'))
         mini_map_x, mini_map_y = player.x // MAP_SCALE, player.y // MAP_SCALE
         pygame.draw.line(self.mini_map_screen, pygame.Color('red'),
@@ -58,7 +58,7 @@ class Render:
         for x, y in level_mini_map:
             pygame.draw.rect(self.mini_map_screen, pygame.Color('grey'),
                              (x, y, MINI_MAP_TILE_SIZE, MINI_MAP_TILE_SIZE))
-        self.screen.blit(self.mini_map_screen, MINI_MAP_POSITION)
+        self.screen.blit(self.mini_map_screen, MINI_MAP_POSITION)"""
 
     def show_fps(self, clock):
         fps = str(int(clock.get_fps()))
