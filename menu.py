@@ -1,12 +1,12 @@
 import pygame
 import sys
-import os
 
 
 pygame.init()
 window = pygame.display.set_mode((1500, 800))
 
 
+# стартовый экран
 class Menu:
     def __init__(self, screen, points):
         self.screen = screen
@@ -25,12 +25,13 @@ class Menu:
 
         point = 0
         while running:
+            self.screen.fill(pygame.Color('black'))
             textures_1 = pygame.image.load('textures/labirint.jpg')
             window.blit(textures_1, (0, 0))
             mouse_pos = pygame.mouse.get_pos()
             for i in self.points:
-                if (mouse_pos[0] > i[0] and mouse_pos[0] < i[0] + 100)\
-                        and (mouse_pos[1] > i[1] and mouse_pos[1] < i[1] + 100):
+                if (i[0] < mouse_pos[0] < i[0] + 100
+                        and i[1] < mouse_pos[1] < i[1] + 100):
                     point = i[5]
                 self.render(font_menu, point)
             for event in pygame.event.get():
@@ -52,4 +53,3 @@ class Menu:
                         sys.exit()
             self.screen.blit(window, (0, 0))
             pygame.display.flip()
-

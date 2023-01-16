@@ -2,7 +2,6 @@ import pygame
 import os
 
 from settings import *
-from load_map import level_mini_map
 
 
 def load_textures(name):
@@ -14,21 +13,7 @@ def load_textures(name):
     return image
 
 
-class Wall(pygame.sprite.Sprite):
-    def __init__(self, group):
-        super().__init__()
-
-
-class Coin(pygame.sprite.Sprite):
-    def __init__(self, group):
-        super().__init__()
-
-
-class MiniPlayer(pygame.sprite.Sprite):
-    def __init__(self, group):
-        super().__init__()
-
-
+# отображение части компонентов на экран
 class Render:
     def __init__(self, screen, mini_map_screen):
         self.screen = screen
@@ -44,23 +29,13 @@ class Render:
     def draw_level(self, objects):
         for wall in sorted(objects, key=lambda x: x[0], reverse=True):
             if wall[0]:
-                self.screen.blit(wall[2], wall[1])
-
-    """def draw_mini_map(self, player):
-        self.mini_map_screen.fill(pygame.Color('black'))
-        mini_map_x, mini_map_y = player.x // MAP_SCALE, player.y // MAP_SCALE
-        pygame.draw.line(self.mini_map_screen, pygame.Color('red'),
-                         (mini_map_x, mini_map_y),
-                         (mini_map_x + 15 * math.cos(player.angle),
-                          mini_map_y + 15 * math.sin(player.angle)))
-        pygame.draw.circle(self.mini_map_screen, pygame.Color('red'), (mini_map_x, mini_map_y), 6)
-
-        for x, y in level_mini_map:
-            pygame.draw.rect(self.mini_map_screen, pygame.Color('grey'),
-                             (x, y, MINI_MAP_TILE_SIZE, MINI_MAP_TILE_SIZE))
-        self.screen.blit(self.mini_map_screen, MINI_MAP_POSITION)"""
+                self.screen.blit(wall[1], wall[2])
 
     def show_fps(self, clock):
         fps = str(int(clock.get_fps()))
         text = self.font.render(fps, False, pygame.Color('white'))
         self.screen.blit(text, FPS_POSITION)
+
+    def show_collected(self, max_amount, current):
+        text = self.font.render(f'{current}/{max_amount}', False, pygame.Color('white'))
+        self.screen.blit(text, AMOUNT_POSITION)

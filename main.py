@@ -3,41 +3,70 @@ import pygame
 from settings import *
 from player import Player
 from ray_casting import ray_casting
-from show_sprites import Sprites
 from render import Render
-from mini_map import all_mini_sprites
-from level_system import define_level
+from mini_map import mini_map
+from load_level import define_level
+from finish import Finish
+from menu import Menu
 
 pygame.init()
 screen = pygame.display.set_mode(SIZE)
 mini_map_screen = pygame.Surface((MINI_MAP_WIDTH, MINI_MAP_HEIGHT))
-level = define_level()
+coin_amount = 0
 
-clock = pygame.time.Clock()
-sprites = Sprites(level['sprites'])
-player = Player()
-render = Render(screen, mini_map_screen)
+game = Menu(screen, points)
+game.menu()
 
-running = True
-while running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            exit(0)
+# главный цикл программы, проход по всем уровням
+for i in range(3):
+    level = define_level(i + 1)
+    mini = mini_map(level['level_mini_map'],
+                    level['coins_coordinates'],
+                    level[
+                        'check_point_coordinates'])
+    all_mini_sprites, mini_coins, mini_walls, mini_player, mini_map_x, mini_map_y = mini
 
-    all_mini_sprites.update(player.x, player.y)
-    player.motion()
+    clock = pygame.time.Clock()
+    all_sprites = level['sprites']
+    player = Player(mini_player, mini_walls)
+    render = Render(screen, mini_map_screen)
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                exit(0)
+        mini_player.update(player.x, player.y)
+        if mini_player.coins_in_use == level['amount_of_coins']:
+            coin_amount += mini_player.coins_in_use
+            running = False
+        player.motion()
 
-    screen.fill(pygame.Color('black'))
-    mini_map_screen.fill(pygame.Color('black'))
+        screen.fill(pygame.Color('black'))
+        mini_map_screen.fill(pygame.Color('black'))
 
-    render.draw_background()
-    walls = ray_casting(player.pos, player.angle, render.textures)
-    render.draw_level(walls + [obj.sprite_placement(player, walls)
-                               for obj in sprites.all_sprites])
-    render.show_fps(clock)
+        render.draw_background()
+        walls = ray_casting(player.pos, player.angle, render.textures,
+                            level['level_map'], *level['MAP_SIZE'])
 
-    all_mini_sprites.draw(mini_map_screen)
-    screen.blit(mini_map_screen, MINI_MAP_POSITION)
+        sprites_with_coins = [sprite for sprite in all_sprites if sprite.type == 'coin']
+        sprites_without_coins = [sprite for sprite in all_sprites if sprite.type != 'coin']
 
-    pygame.display.flip()
-    clock.tick(FPS)
+        true_coins = []
+        for ind_coin in range(len(sprites_with_coins)):
+            if ind_coin not in mini_player.deleted:
+                true_coins.append(sprites_with_coins[ind_coin])
+
+        sprites_without_coins.extend(true_coins)
+        render.draw_level(walls + [obj.sprite_placement(player, walls)
+                                   for obj in sprites_without_coins])
+        render.show_fps(clock)
+        render.show_collected(level['amount_of_coins'], mini_player.coins_in_use)
+
+        all_mini_sprites.draw(mini_map_screen)
+        screen.blit(mini_map_screen, MINI_MAP_POSITION)
+
+        pygame.display.flip()
+        clock.tick(FPS)
+
+finish = Finish(screen, points, coin_amount)
+finish.finish()

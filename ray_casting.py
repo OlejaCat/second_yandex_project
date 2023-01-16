@@ -1,21 +1,21 @@
 import pygame
 
 from settings import *
-from load_map import level_map, MAP_WIDTH, MAP_HEIGHT
 
 
 def corner_coords(a, b):
     return (a // TILE_SIZE) * TILE_SIZE, (b // TILE_SIZE) * TILE_SIZE
 
 
-def ray_casting(player_pos, player_angle, textures):
+# рэй кастинг, функция, определяет расстояние до объектов, благодаря этому вычисляет проекции объектов
+def ray_casting(player_pos, player_angle, textures, level_map, MAP_WIDTH, MAP_HEIGHT):
     current_angle = player_angle - (FOV / 2)
     x0, y0 = player_pos
     cx, cy = corner_coords(x0, y0)
     horizontal_depth, vertical_depth = 0, 0
     horizontal_texture, vertical_texture = 1, 1
-    distance_to_walls = []
     yv, xh = 0, 0
+    walls = list()
 
     for ray in range(NUMBER_OF_RAYS):
         sin = math.sin(current_angle)
@@ -53,9 +53,8 @@ def ray_casting(player_pos, player_angle, textures):
         part_of_wall = textures[texture].subsurface(offset * TEXTURE_SCALE, 0,
                                                     TEXTURE_SCALE, TEXTURE_HEIGHT)
         part_of_wall = pygame.transform.scale(part_of_wall, (SCALE, projection_height))
-        distance_to_walls.append((depth, distance_to_wall, part_of_wall))
+        walls.append((depth, part_of_wall, distance_to_wall))
 
         current_angle += DELTA
 
-    return distance_to_walls
-
+    return walls
